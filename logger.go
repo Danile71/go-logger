@@ -75,9 +75,8 @@ func llog(level Level, msg string) LogMessage {
 	if timeFormat != "" {
 		m.Timestamp = time.Now().Format(timeFormat)
 	}
-	b, err := json.Marshal(m)
-	if err == nil {
-		if level <= debugLevel {
+	if level <= debugLevel {
+		if b, err := json.Marshal(m); err == nil {
 			fmt.Println(string(b))
 			go send(b)
 		}
