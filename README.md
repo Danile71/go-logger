@@ -20,7 +20,7 @@ Example:
 package main
 
 import (
-	"github.com/Danile71/logger"
+	"github.com/Danile71/go-logger"
 )
 
 func main() {
