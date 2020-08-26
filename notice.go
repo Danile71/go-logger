@@ -1,9 +1,9 @@
 package logger
 
-func Notice(args ...interface{}) {
-	Log(NOTICE, args...)
+func Notice(args ...interface{}) LogMessage {
+	return Log(NOTICE, args...)
 }
 
-func Noticef(format string, args ...interface{}) {
-	Logf(NOTICE, format, args...)
+func Noticef(format string, args ...interface{}) LogMessage {
+	return Logf(NOTICE, format, args...)
 }

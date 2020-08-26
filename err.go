@@ -24,10 +24,10 @@ func OnError(err error) bool {
 	return true
 }
 
-func Error(args ...interface{}) {
-	Log(ERR, args...)
+func Error(args ...interface{}) LogMessage {
+	return Log(ERR, args...)
 }
 
-func Errorf(format string, args ...interface{}) {
-	Logf(ERR, format, args...)
+func Errorf(format string, args ...interface{}) LogMessage {
+	return Logf(ERR, format, args...)
 }

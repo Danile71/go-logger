@@ -1,9 +1,9 @@
 package logger
 
-func Warn(args ...interface{}) {
-	Log(WARNING, args...)
+func Warn(args ...interface{}) LogMessage {
+	return Log(WARNING, args...)
 }
 
-func Warnf(format string, args ...interface{}) {
-	Logf(WARNING, format, args...)
+func Warnf(format string, args ...interface{}) LogMessage {
+	return Logf(WARNING, format, args...)
 }

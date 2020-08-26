@@ -1,9 +1,9 @@
 package logger
 
-func Emerg(args ...interface{}) {
-	Log(EMERG, args...)
+func Emerg(args ...interface{}) LogMessage {
+	return Log(EMERG, args...)
 }
 
-func Emergf(format string, args ...interface{}) {
-	Logf(EMERG, format, args...)
+func Emergf(format string, args ...interface{}) LogMessage {
+	return Logf(EMERG, format, args...)
 }

@@ -1,9 +1,9 @@
 package logger
 
-func Debug(args ...interface{}) {
-	Log(DEBUG, args...)
+func Debug(args ...interface{}) LogMessage {
+	return Log(DEBUG, args...)
 }
 
-func Debugf(format string, args ...interface{}) {
-	Logf(DEBUG, format, args...)
+func Debugf(format string, args ...interface{}) LogMessage {
+	return Logf(DEBUG, format, args...)
 }

@@ -1,9 +1,9 @@
 package logger
 
-func Crit(args ...interface{}) {
-	Log(CRIT, args...)
+func Crit(args ...interface{}) LogMessage {
+	return Log(CRIT, args...)
 }
 
-func Critf(format string, args ...interface{}) {
-	Logf(CRIT, format, args...)
+func Critf(format string, args ...interface{}) LogMessage {
+	return Logf(CRIT, format, args...)
 }
