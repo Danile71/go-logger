@@ -1,9 +1,9 @@
 package logger
 
 func Notice(args ...interface{}) {
-	Log(NOTICE, args)
+	Log(NOTICE, args...)
 }
 
 func Noticef(format string, args ...interface{}) {
-	Logf(NOTICE, format, args)
+	Logf(NOTICE, format, args...)
 }

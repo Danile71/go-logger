@@ -1,9 +1,9 @@
 package logger
 
 func Alert(args ...interface{}) {
-	Log(ALERT, args)
+	Log(ALERT, args...)
 }
 
 func Alertf(format string, args ...interface{}) {
-	Logf(ALERT, format, args)
+	Logf(ALERT, format, args...)
 }

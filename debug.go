@@ -1,9 +1,9 @@
 package logger
 
 func Debug(args ...interface{}) {
-	Log(DEBUG, args)
+	Log(DEBUG, args...)
 }
 
 func Debugf(format string, args ...interface{}) {
-	Logf(DEBUG, format, args)
+	Logf(DEBUG, format, args...)
 }

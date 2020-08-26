@@ -25,9 +25,9 @@ func OnError(err error) bool {
 }
 
 func Error(args ...interface{}) {
-	Log(ERR, args)
+	Log(ERR, args...)
 }
 
 func Errorf(format string, args ...interface{}) {
-	Logf(ERR, format, args)
+	Logf(ERR, format, args...)
 }
