@@ -28,3 +28,7 @@ func send(data []byte) {
 
 	defer res.Body.Close()
 }
+
+func SetApi(url string) {
+	api = url
+}

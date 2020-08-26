@@ -10,8 +10,12 @@ import (
 
 type Level int
 
-var debugLevel = EMERG
-var api string
+var (
+	debugLevel = EMERG
+	api        string
+	timeFormat string
+	fformat    = "%s:%d|%s"
+)
 
 const (
 	EMERG Level = iota
@@ -28,6 +32,14 @@ type LogMessage struct {
 	Timestamp string `json:"time"`
 	Level     Level  `json:"level"`
 	Message   string `json:"message"`
+}
+
+func SetLevel(level Level) {
+	debugLevel = level
+}
+
+func SetTimeFormat(format string) {
+	timeFormat = format
 }
 
 func init() {
@@ -55,34 +67,30 @@ func init() {
 
 	api = os.Getenv("DEBUG_URL")
 
+	timeFormat = os.Getenv("DEBUG_TIME_FORMAT")
+}
+
+func llog(level Level, msg string) LogMessage {
+	m := LogMessage{Timestamp: time.Now().String(), Level: level, Message: msg}
+	if timeFormat != "" {
+		m.Timestamp = time.Now().Format(timeFormat)
+	}
+	b, err := json.Marshal(m)
+	if err == nil {
+		if level <= debugLevel {
+			fmt.Println(string(b))
+			go send(b)
+		}
+	}
+	return m
 }
 
 func log(level Level, fn string, line int, args ...interface{}) LogMessage {
-	message := fmt.Sprint(args...)
-	msg := fmt.Sprintf("%s:%d|%s", fn, line, message)
-	m := LogMessage{Timestamp: time.Now().String(), Level: level, Message: msg}
-	b, err := json.Marshal(m)
-	if err == nil {
-		if level <= debugLevel {
-			fmt.Println(string(b))
-			go send(b)
-		}
-	}
-	return m
+	return llog(level, fmt.Sprintf(fformat, fn, line, fmt.Sprint(args...)))
 }
 
 func logf(level Level, fn string, line int, format string, args ...interface{}) LogMessage {
-	message := fmt.Sprintf(format, args...)
-	msg := fmt.Sprintf("%s:%d|%s", fn, line, message)
-	m := LogMessage{Timestamp: time.Now().String(), Level: level, Message: msg}
-	b, err := json.Marshal(m)
-	if err == nil {
-		if level <= debugLevel {
-			fmt.Println(string(b))
-			go send(b)
-		}
-	}
-	return m
+	return llog(level, fmt.Sprintf(fformat, fn, line, fmt.Sprintf(format, args...)))
 }
 
 func Log(level Level, args ...interface{}) LogMessage {

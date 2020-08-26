@@ -14,16 +14,22 @@ set DEBUG_LEVEL (0-7)
 
 set DEBUG_URL (url to rest api, post method)
 
+set DEBUG_TIME_FORMAT ("Jan _2 15:04:05")
+
 Example:
 
 ```go
 package main
 
 import (
+	"errors"
+
 	"github.com/Danile71/go-logger"
 )
 
 func main() {
+	logger.SetTimeFormat("Jan _2 15:04:05")
+
 	logger.Emergf("test %d %s", 123, "help")
 	logger.Emerg("test ", 123, " help")
 
@@ -47,5 +53,17 @@ func main() {
 
 	logger.Debugf("test %d %s", 123, "help")
 	logger.Debug("test ", 123, " help")
+
+	logger.Logf(logger.ERR, "test %d %s", 123, "help")
+	logger.Log(logger.ERR, "test ", 123, " help")
+
+	var err error
+	if logger.OnError(err) {
+		panic("err")
+	}
+	err = errors.New("test error")
+	if !logger.OnError(err) {
+		panic("err")
+	}
 }
 ```
