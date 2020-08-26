@@ -10,8 +10,9 @@ go get github.com/Danile71/go-logger
 
 ### Usage
 
-DEBUG_LEVEL (0-7)
-DEBUG_URL (url to rest api, post method)
+set DEBUG_LEVEL (0-7)
+
+set DEBUG_URL (url to rest api, post method)
 
 Example:
 
