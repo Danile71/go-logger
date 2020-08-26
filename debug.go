@@ -1,9 +1,15 @@
 package logger
 
+import (
+	"runtime"
+)
+
 func Debug(args ...interface{}) LogMessage {
-	return Log(DEBUG, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return log(DEBUG, fn, line, args...)
 }
 
 func Debugf(format string, args ...interface{}) LogMessage {
-	return Logf(DEBUG, format, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return logf(DEBUG, fn, line, format, args...)
 }

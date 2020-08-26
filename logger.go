@@ -57,8 +57,7 @@ func init() {
 
 }
 
-func Log(level Level, args ...interface{}) LogMessage {
-	_, fn, line, _ := runtime.Caller(1)
+func log(level Level, fn string, line int, args ...interface{}) LogMessage {
 	message := fmt.Sprint(args...)
 	msg := fmt.Sprintf("%s:%d|%s", fn, line, message)
 	m := LogMessage{Timestamp: time.Now().String(), Level: level, Message: msg}
@@ -72,8 +71,7 @@ func Log(level Level, args ...interface{}) LogMessage {
 	return m
 }
 
-func Logf(level Level, format string, args ...interface{}) LogMessage {
-	_, fn, line, _ := runtime.Caller(1)
+func logf(level Level, fn string, line int, format string, args ...interface{}) LogMessage {
 	message := fmt.Sprintf(format, args...)
 	msg := fmt.Sprintf("%s:%d|%s", fn, line, message)
 	m := LogMessage{Timestamp: time.Now().String(), Level: level, Message: msg}
@@ -85,4 +83,14 @@ func Logf(level Level, format string, args ...interface{}) LogMessage {
 		}
 	}
 	return m
+}
+
+func Log(level Level, args ...interface{}) LogMessage {
+	_, fn, line, _ := runtime.Caller(1)
+	return log(level, fn, line, args...)
+}
+
+func Logf(level Level, format string, args ...interface{}) LogMessage {
+	_, fn, line, _ := runtime.Caller(1)
+	return logf(level, fn, line, format, args...)
 }

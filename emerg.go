@@ -1,9 +1,15 @@
 package logger
 
+import (
+	"runtime"
+)
+
 func Emerg(args ...interface{}) LogMessage {
-	return Log(EMERG, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return log(EMERG, fn, line, args...)
 }
 
 func Emergf(format string, args ...interface{}) LogMessage {
-	return Logf(EMERG, format, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return logf(EMERG, fn, line, format, args...)
 }

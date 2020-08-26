@@ -1,9 +1,15 @@
 package logger
 
+import (
+	"runtime"
+)
+
 func Notice(args ...interface{}) LogMessage {
-	return Log(NOTICE, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return log(NOTICE, fn, line, args...)
 }
 
 func Noticef(format string, args ...interface{}) LogMessage {
-	return Logf(NOTICE, format, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return logf(NOTICE, fn, line, format, args...)
 }

@@ -25,9 +25,11 @@ func OnError(err error) bool {
 }
 
 func Error(args ...interface{}) LogMessage {
-	return Log(ERR, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return log(ERR, fn, line, args...)
 }
 
 func Errorf(format string, args ...interface{}) LogMessage {
-	return Logf(ERR, format, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return logf(ERR, fn, line, format, args...)
 }

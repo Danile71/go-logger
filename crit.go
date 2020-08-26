@@ -1,9 +1,15 @@
 package logger
 
+import (
+	"runtime"
+)
+
 func Crit(args ...interface{}) LogMessage {
-	return Log(CRIT, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return log(CRIT, fn, line, args...)
 }
 
 func Critf(format string, args ...interface{}) LogMessage {
-	return Logf(CRIT, format, args...)
+	_, fn, line, _ := runtime.Caller(1)
+	return logf(CRIT, fn, line, format, args...)
 }
