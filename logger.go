@@ -18,14 +18,18 @@ type Format int
 // Output instance
 type Output struct {
 	io.Writer
+	Level
 	Format
+	TimeFormat string
 }
 
 var (
-	debugLevel = EMERG
-	timeFormat string
-	fformat    = "%s:%d|%s"
-	outputs    = []Output{Output{os.Stderr, JSON}}
+	def     = Output{os.Stderr, EMERG, JSON, ""}
+	outputs = []Output{def}
+)
+
+const (
+	fformat = "%s:%d|%s"
 )
 
 const (
@@ -44,8 +48,8 @@ const (
 	DEBUG
 )
 
-func AddOutput(out io.Writer, format ...Format) {
-	output := Output{out, JSON}
+func AddOutput(out io.Writer, level Level, format ...Format) {
+	output := Output{out, level, JSON, ""}
 	if len(format) > 0 {
 		output.Format = format[0]
 	}
@@ -63,49 +67,64 @@ func (message *LogMessage) String() string {
 }
 
 func SetLevel(level Level) {
-	debugLevel = level
+	def.Level = level
+}
+
+func (output *Output) SetLevel(level Level) {
+	output.Level = level
 }
 
 func SetTimeFormat(format string) {
-	timeFormat = format
+	def.TimeFormat = format
+}
+
+func (output *Output) SetTimeFormat(format string) {
+	output.TimeFormat = format
 }
 
 func init() {
 	level := os.Getenv("DEBUG_LEVEL")
 	switch level {
 	case "0":
-		debugLevel = EMERG
+		def.Level = EMERG
 	case "1":
-		debugLevel = ALERT
+		def.Level = ALERT
 	case "2":
-		debugLevel = CRIT
+		def.Level = CRIT
 	case "3":
-		debugLevel = ERR
+		def.Level = ERR
 	case "4":
-		debugLevel = WARNING
+		def.Level = WARNING
 	case "5":
-		debugLevel = NOTICE
+		def.Level = NOTICE
 	case "6":
-		debugLevel = INFO
+		def.Level = INFO
 	case "7":
-		debugLevel = DEBUG
+		def.Level = DEBUG
 	default:
-		debugLevel = ERR
+		def.Level = ERR
 	}
 
-	timeFormat = os.Getenv("DEBUG_TIME_FORMAT")
+	def.TimeFormat = os.Getenv("DEBUG_TIME_FORMAT")
 }
 
 func llog(level Level, msg string) LogMessage {
 	m := LogMessage{Timestamp: time.Now().String(), Level: level, Message: msg}
-	if timeFormat != "" {
-		m.Timestamp = time.Now().Format(timeFormat)
-	}
-	if level <= debugLevel {
-		for _, out := range outputs {
-			//if formatOutput ==
-			// yes, we skipped error
-			json.NewEncoder(out).Encode(m)
+
+	for _, out := range outputs {
+		if level <= out.Level {
+			if out.TimeFormat != "" {
+				m.Timestamp = time.Now().Format(out.TimeFormat)
+			}
+
+			switch out.Format {
+			case STRING:
+				out.Write([]byte(m.String()))
+			default:
+				// yes, we skipped error
+				json.NewEncoder(out).Encode(m)
+			}
+
 		}
 	}
 	return m

@@ -11,8 +11,8 @@ type NetOutput struct {
 	URL string
 }
 
-func AddNetOutput(URL string, format ...Format) {
-	output := Output{NetOutput{URL: URL}, JSON}
+func AddNetOutput(URL string, level Level, format ...Format) {
+	output := Output{NetOutput{URL: URL}, level, JSON, ""}
 	if len(format) > 0 {
 		output.Format = format[0]
 	}
