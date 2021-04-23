@@ -120,7 +120,7 @@ func llog(level Level, msg string) LogMessage {
 
 			switch out.Format {
 			case STRING:
-				out.Write([]byte(m.String()))
+				out.Write([]byte(m.String() + "\n"))
 			default:
 				// yes, we skipped error
 				json.NewEncoder(out).Encode(m)
