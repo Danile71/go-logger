@@ -84,14 +84,10 @@ func llog(level Level, msg string) LogMessage {
 		buf := &bytes.Buffer{}
 		_ = json.NewEncoder(buf).Encode(m)
 		for _, out := range outputs {
-			go logWrite(buf, out)
+			go io.Copy(out, buf)
 		}
 	}
 	return m
-}
-
-func logWrite(in io.Reader, out io.Writer) {
-	io.Copy(out, in)
 }
 
 func log(level Level, fn string, line int, args ...interface{}) LogMessage {
