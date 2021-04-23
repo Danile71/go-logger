@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -80,11 +79,8 @@ func llog(level Level, msg string) LogMessage {
 		m.Timestamp = time.Now().Format(timeFormat)
 	}
 	if level <= debugLevel {
-		// copy log message to all outputs through bytes.Buffer
-		buf := &bytes.Buffer{}
-		_ = json.NewEncoder(buf).Encode(m)
 		for _, out := range outputs {
-			go io.Copy(out, buf)
+			_ = json.NewEncoder(out).Encode(m)
 		}
 	}
 	return m
