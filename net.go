@@ -11,12 +11,13 @@ type NetOutput struct {
 	URL string
 }
 
-func AddNetOutput(URL string, level Level, format ...Format) {
+func AddNetOutput(URL string, level Level, format ...Format) Output {
 	output := Output{NetOutput{URL: URL}, level, JSON, ""}
 	if len(format) > 0 {
 		output.Format = format[0]
 	}
 	outputs = append(outputs, output)
+	return output
 }
 
 func (o NetOutput) Write(p []byte) (n int, err error) {

@@ -48,12 +48,13 @@ const (
 	DEBUG
 )
 
-func AddOutput(out io.Writer, level Level, format ...Format) {
+func AddOutput(out io.Writer, level Level, format ...Format) Output {
 	output := Output{out, level, JSON, ""}
 	if len(format) > 0 {
 		output.Format = format[0]
 	}
 	outputs = append(outputs, output)
+	return output
 }
 
 type LogMessage struct {
