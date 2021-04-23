@@ -1,8 +1,10 @@
 package logger
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"runtime"
 	"time"
@@ -12,9 +14,9 @@ type Level int
 
 var (
 	debugLevel = EMERG
-	api        string
 	timeFormat string
 	fformat    = "%s:%d|%s"
+	outputs    = []io.Writer{os.Stderr}
 )
 
 const (
@@ -27,6 +29,10 @@ const (
 	INFO
 	DEBUG
 )
+
+func AddOutput(out io.Writer) {
+	outputs = append(outputs, out)
+}
 
 type LogMessage struct {
 	Timestamp string `json:"time"`
@@ -65,8 +71,6 @@ func init() {
 		debugLevel = ERR
 	}
 
-	api = os.Getenv("DEBUG_URL")
-
 	timeFormat = os.Getenv("DEBUG_TIME_FORMAT")
 }
 
@@ -76,9 +80,11 @@ func llog(level Level, msg string) LogMessage {
 		m.Timestamp = time.Now().Format(timeFormat)
 	}
 	if level <= debugLevel {
-		if b, err := json.Marshal(m); err == nil {
-			fmt.Println(string(b))
-			go send(b)
+		// copy log message to all outputs through bytes.Buffer
+		buf := &bytes.Buffer{}
+		_ = json.NewEncoder(buf).Encode(m)
+		for _, out := range outputs {
+			go io.Copy(out, buf)
 		}
 	}
 	return m
