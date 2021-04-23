@@ -3,16 +3,29 @@ package logger
 import (
 	"bytes"
 	"crypto/tls"
+	"fmt"
 	"net/http"
 )
 
-func send(data []byte) {
-	if api == "" {
+type NetOutput struct {
+	URL string
+}
+
+func NewNetOutput(URL string) NetOutput {
+	return NetOutput{URL: URL}
+}
+
+func (o NetOutput) Write(p []byte) (n int, err error) {
+	if o.URL == "" {
+		n = len(p)
+		err = fmt.Errorf("URL not set")
 		return
 	}
 
-	req, err := http.NewRequest("POST", api, bytes.NewReader(data))
+	req, err := http.NewRequest("POST", o.URL, bytes.NewReader(p))
 	if err != nil {
+		n = len(p)
+		err = fmt.Errorf("failed to create request with log message to %s: %w", o.URL, err)
 		return
 	}
 
@@ -23,12 +36,12 @@ func send(data []byte) {
 	client := &http.Client{Transport: tr}
 	res, err := client.Do(req)
 	if err != nil {
+		n = len(p)
+		err = fmt.Errorf("failed to send log message to %s: %w", o.URL, err)
 		return
 	}
-
 	defer res.Body.Close()
-}
-
-func SetApi(url string) {
-	api = url
+	n = 0
+	err = nil
+	return
 }

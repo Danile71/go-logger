@@ -14,7 +14,6 @@ type Level int
 
 var (
 	debugLevel = EMERG
-	api        string
 	timeFormat string
 	fformat    = "%s:%d|%s"
 	outputs    = []io.Writer{os.Stderr}
@@ -71,8 +70,6 @@ func init() {
 	default:
 		debugLevel = ERR
 	}
-
-	api = os.Getenv("DEBUG_URL")
 
 	timeFormat = os.Getenv("DEBUG_TIME_FORMAT")
 }
