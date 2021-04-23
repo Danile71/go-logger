@@ -9,13 +9,28 @@ import (
 	"time"
 )
 
+// Log level
 type Level int
+
+// Output format
+type Format int
+
+// Output instance
+type Output struct {
+	io.Writer
+	Format
+}
 
 var (
 	debugLevel = EMERG
 	timeFormat string
 	fformat    = "%s:%d|%s"
-	outputs    = []io.Writer{os.Stderr}
+	outputs    = []Output{Output{os.Stderr, JSON}}
+)
+
+const (
+	JSON Format = iota
+	STRING
 )
 
 const (
@@ -29,14 +44,22 @@ const (
 	DEBUG
 )
 
-func AddOutput(out io.Writer) {
-	outputs = append(outputs, out)
+func AddOutput(out io.Writer, format ...Format) {
+	output := Output{out, JSON}
+	if len(format) > 0 {
+		output.Format = format[0]
+	}
+	outputs = append(outputs, output)
 }
 
 type LogMessage struct {
 	Timestamp string `json:"time"`
 	Level     Level  `json:"level"`
 	Message   string `json:"message"`
+}
+
+func (message *LogMessage) String() string {
+	return fmt.Sprintf("%s %s", message.Timestamp, message.Message)
 }
 
 func SetLevel(level Level) {
@@ -80,7 +103,9 @@ func llog(level Level, msg string) LogMessage {
 	}
 	if level <= debugLevel {
 		for _, out := range outputs {
-			_ = json.NewEncoder(out).Encode(m)
+			//if formatOutput ==
+			// yes, we skipped error
+			json.NewEncoder(out).Encode(m)
 		}
 	}
 	return m

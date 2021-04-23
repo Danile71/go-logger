@@ -11,20 +11,24 @@ type NetOutput struct {
 	URL string
 }
 
-func NewNetOutput(URL string) NetOutput {
-	return NetOutput{URL: URL}
+func AddNetOutput(URL string, format ...Format) {
+	output := Output{NetOutput{URL: URL}, JSON}
+	if len(format) > 0 {
+		output.Format = format[0]
+	}
+	outputs = append(outputs, output)
 }
 
 func (o NetOutput) Write(p []byte) (n int, err error) {
+	n = len(p)
+
 	if o.URL == "" {
-		n = len(p)
 		err = fmt.Errorf("URL not set")
 		return
 	}
 
 	req, err := http.NewRequest("POST", o.URL, bytes.NewReader(p))
 	if err != nil {
-		n = len(p)
 		err = fmt.Errorf("failed to create request with log message to %s: %w", o.URL, err)
 		return
 	}
@@ -36,12 +40,9 @@ func (o NetOutput) Write(p []byte) (n int, err error) {
 	client := &http.Client{Transport: tr}
 	res, err := client.Do(req)
 	if err != nil {
-		n = len(p)
 		err = fmt.Errorf("failed to send log message to %s: %w", o.URL, err)
 		return
 	}
 	defer res.Body.Close()
-	n = 0
-	err = nil
 	return
 }
